@@ -1,0 +1,2 @@
+split,start_day,end_day,days,observations,return_observations,gross_total_return,transaction_cost_return,net_total_return,annualized_volatility,sharpe,sortino,max_drawdown,hit_rate,average_trade_pnl,average_winning_trade,average_losing_trade,turnover,exposure,number_of_trades,ending_equity
+TRAIN,1,43,43,14147,14104,0.018553130405390306,-0.0468833777591352,-0.027010459737975112,0.07107106860508848,-2.2224482898408797,-1.5968678015018993,-0.050279787523650143,0.25,-912.0104312358435,4746.499745885094,-2798.1804902761555,64.0,0.08616667844772744,32,972989.5402620248

@@ -1,0 +1,2 @@
+split,start_day,end_day,days,observations,return_observations,gross_total_return,transaction_cost_return,net_total_return,annualized_volatility,sharpe,sortino,max_drawdown,hit_rate,average_trade_pnl,average_winning_trade,average_losing_trade,turnover,exposure,number_of_trades,ending_equity
+VALIDATION,44,54,11,3619,3608,0.021045312246598336,-0.008962967656066856,0.012652608673433985,0.05109902802630534,5.66328462438978,6.317701084944564,-0.006678033532253602,0.5,1984.2740711637907,5927.0888820925575,-1958.5407397649751,12.0,0.08483006355346781,6,1012652.608673434

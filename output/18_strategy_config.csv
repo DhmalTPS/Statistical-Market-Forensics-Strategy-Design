@@ -1,0 +1,41 @@
+parameter,value
+feature,VB5_T12
+family,VB
+forensic_hypothesis,range_3600
+rebalance_minutes,1
+feature_horizon,10
+horizon_semantics,PREDICTIVE_TARGET_HORIZON_NOT_HOLDING_PERIOD
+execution_lag_minutes,1
+signal,signal_t = signal_direction * z_t
+z_score,z_t = (feature_t - train_mean) / train_std
+signal_direction,1
+direction_source,TRAIN_ONLY_ALPHA_EVIDENCE
+signal_direction_verification_required,True
+normalization,TRAIN_ONLY_MEAN_STD
+train_mean,0.003559464089101572
+train_std,0.0023883311659549677
+threshold_grid,"0.5,0.75,1.0,1.25,1.5"
+selected_threshold,1.25
+position_rule,LONG=+1 if signal>selected_threshold; FLAT=0 if abs(signal)<=selected_threshold; SHORT=-1 if signal<-selected_threshold
+max_exposure,1.0
+transaction_cost_bps,7.5
+cost_bps_to_decimal,cost_decimal = transaction_cost_bps / 10000  (do NOT subtract raw bps from returns)
+turnover_model,absolute_position_change
+cost_application,net_ret_t = gross_ret_t - abs(position_t - position_t_minus_1) * (transaction_cost_bps / 10000)
+day_boundary_rule,"RESET_POSITION_TO_ZERO_AT_START_OF_EACH_DAY (no overnight carry, one file per day)"
+train_start,1
+train_end,43
+validation_start,44
+validation_end,54
+test_days,"55,56,57,58,59,60,61,62,63,64,80,81,82,83,84,85"
+lookahead_rule,feature_t -> signal_t -> execute_t+1
+candidate_selection_source,17_feature_alpha_daily (re-aggregated in File 18)
+candidate_selection_scope,DISCOVERY_ONLY_54_DAYS
+discovery_days,"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54"
+parameter_selection_rule,TRAIN_FEATURE_DIRECTION_NORMALIZATION_VALIDATION_THRESHOLD_LOCK_TEST
+test_usage,NO_FEATURE_OR_THRESHOLD_SELECTION
+threshold_selection,VALIDATION_ONLY
+final_test_rule,LOCK_FEATURE_AND_THRESHOLD_BEFORE_TEST
+position_continuity,1_MINUTE_REBALANCE
+test_availability,VALIDATE_ONLY_NOT_SELECTION_CRITERION
+diagnostics_required,"long_fraction,short_fraction,flat_fraction,active_fraction,mean_abs_position,trade_count,turnover,gross_return,net_return"

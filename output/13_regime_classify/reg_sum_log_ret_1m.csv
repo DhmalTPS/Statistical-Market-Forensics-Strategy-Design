@@ -1,0 +1,6 @@
+ret_series,regime,count,fraction
+log_ret_1m,MEAN_REVERTING,0,0.0
+log_ret_1m,RANDOM_WALK_LIKE,0,0.0
+log_ret_1m,MOMENTUM,0,0.0
+log_ret_1m,MIXED_INCONCLUSIVE,70,1.0
+log_ret_1m,INSUFFICIENT_EVIDENCE,0,0.0

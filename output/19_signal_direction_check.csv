@@ -1,0 +1,2 @@
+validation_days,observations,raw_feature_vs_forward_10m_spearman,configured_signal_direction,validation_sign_agrees_with_config
+44-54,3619,0.024096399484153094,1,True
