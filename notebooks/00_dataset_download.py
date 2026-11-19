@@ -100,5 +100,5 @@
 ########## DATASET DOWNLOAD ##########
 
 import kagglehub
-path = kagglehub.dataset_download("hawkwild/ebx-20-days",output_dir=r"D:\QuantDataChallenge\EBX_Dataset",force_download=True)
+path = kagglehub.dataset_download("hawkwild/ebx-20-days",output_dir="EBX_Dataset",force_download=True)
 print(path)

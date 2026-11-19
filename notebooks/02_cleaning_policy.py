@@ -31,8 +31,8 @@ def get_day_number(path):
     match = re.search(r'day[_\s]?(\d+)', path.stem, re.IGNORECASE)
     return int(match.group(1)) if match else None
 
-DATA_DIR = Path(r".\EBX_Dataset")
-OUTPUT_DIR = Path(r".\output")
+DATA_DIR = Path("EBX_Dataset")
+OUTPUT_DIR = Path("output")
 
 csv_files = sorted(DATA_DIR.glob("*.csv"), key=get_day_number)
 comp_files = [f for f in csv_files if get_day_number(f) <= 85]

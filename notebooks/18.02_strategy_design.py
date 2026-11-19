@@ -25,8 +25,8 @@ def normalize_day(x):
     return int(res.group(1)) if res else pd.NA
 
 
-DATA_DIR = Path(r'.\EBX_Dataset')
-OUTPUT_DIR = Path(r'.\output')
+DATA_DIR = Path('EBX_Dataset')
+OUTPUT_DIR = Path('output')
 
 ALPHA_FILE = OUTPUT_DIR / "17_feature_alpha_rank.csv"
 CORR_FILE = OUTPUT_DIR / "17_feature_correlation.csv"

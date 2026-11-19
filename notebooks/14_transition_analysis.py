@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-OUTPUT_DIR = Path(r".\output")
+OUTPUT_DIR = Path("output")
 REGIME_FILE = OUTPUT_DIR / "13_regime_cum_table.csv"
 TRANS_FILE = OUTPUT_DIR / "14_transition_matrix.csv"
 

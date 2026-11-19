@@ -8,9 +8,9 @@ def get_day_number(file):
     res = re.search(r'day[_\s]?(\d+)',file.stem,re.IGNORECASE)
     return int(res.group(1)) if res else None
 
-DATA_DIR = Path(r'.\EBX_Dataset')
-OUTPUT_DIR = Path(r'.\output')
-RESULTS_DIR = Path(r'.\results')
+DATA_DIR = Path('EBX_Dataset')
+OUTPUT_DIR = Path('output')
+RESULTS_DIR = Path('results')
 RETURN_DIR = OUTPUT_DIR / "03_day_returns"
 INTRA_DIR = OUTPUT_DIR / "05_intraday_season"
 INTRA_DIR.mkdir(parents=True,exist_ok=True)

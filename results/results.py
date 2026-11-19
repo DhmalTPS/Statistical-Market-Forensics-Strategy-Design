@@ -819,7 +819,7 @@ def task3():
     # Regime summary
     # --------------------------------------------------------
 
-    report.append("\n### 3.2 Regime breakdown across 85 days\n")
+    report.append("\n### 3.2 Regime breakdown across the 70 sessions\n")
 
     if reg_summary is not None:
         report.append(md_table(reg_summary, max_rows=15))
@@ -851,9 +851,9 @@ def task3():
 
     if reg_table is not None:
         report.append(
-            "The complete 85-day regime table is a required deliverable. "
-            "It is retained in the project output rather than reproducing "
-            "all 85 rows inside the narrative report."
+            "The complete per-day regime table (70 sessions x 3 horizons) "
+            "is in `output/13_regime_classify/`; only representative rows "
+            "are shown here."
         )
 
         # Show only first 10 rows as a compact representative preview.
@@ -1089,7 +1089,9 @@ def task4():
         )
 
         # Do not print the enormous full matrix.
-        numeric = correlation.select_dtypes(include=[np.number])
+        numeric = (correlation[["abs_pearson"]]
+                   if "abs_pearson" in correlation.columns
+                   else correlation.select_dtypes(include=[np.number]))
 
         if not numeric.empty:
             corr_abs = numeric.abs()
@@ -1232,10 +1234,12 @@ def task5():
     )
 
     report.append(
-        "\nThe project split separates parameter discovery from held-out "
-        "evaluation. In the current strategy pipeline the train/validation "
-        "stage is used for selection and calibration, while the final test "
-        "period remains untouched until the strategy is fixed."
+        "\nFeature ranking uses Days 1-54 (train + validation), the z-score "
+        "and signal direction use train only, and the threshold is chosen on "
+        "validation, so no selection step uses test days. Because the "
+        "validation days also sit inside the feature-ranking window, the "
+        "validation Sharpe is optimistic by construction; the test split is "
+        "the only clean out-of-sample read."
     )
 
     # --------------------------------------------------------
@@ -1510,10 +1514,10 @@ def build_report():
     report.append(md_table(evidence))
 
     report.append(
-        "\nThe final submission should include this written report together "
-        "with the required supporting deliverables specified by the "
-        "competition, especially the **85-row regime table**, the "
-        "**feature dossier**, and the **trade log** for Level 2."
+        "\nSupporting deliverables: the per-day regime table "
+        "(`output/13_regime_classify/`), the feature dossier "
+        "(`output/16_FEATURE_DOSSIER.md`) and the trade log "
+        "(`output/19_trade_log.csv`)."
     )
 
     report.append(

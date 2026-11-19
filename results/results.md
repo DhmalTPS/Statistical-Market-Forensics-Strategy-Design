@@ -56,11 +56,7 @@ Returns are analysed rather than raw price levels for the dynamic time-series an
 
 ### 1.5 Short-lag autocorrelation and microstructure
 
-| Return horizon | First reported ACF | Maximum \|ACF\| |
-| --- | --- | --- |
-| 1-second | 1 | 85 |
-| 1-minute | 1 | 85 |
-| 5-minute | 1 | 85 |
+Per-day ACF tables for 1-second, 1-minute and 5-minute returns are in `output/04_day_acf/`, with plots in `results/04_acf_*.png`. The 1-minute and 5-minute series are overlapping k-second returns on the 1-second grid, so their short-lag ACFs are mechanically inflated (see the README caveat).
 
 The interpretation should focus on whether short-horizon return autocorrelation is materially stronger at the 1-second frequency than at the 1-minute/5-minute frequencies. Stronger very-short-lag dependence is consistent with microstructure effects and supports using the 1-minute horizon as the main statistical representation.
 
@@ -80,8 +76,7 @@ The extreme-move audit is retained as supporting evidence for distinguishing gen
 | Variable | Count | Mean | Std | Min | 25% | 50% | 75% | Max |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | day | 1,750.00 | 36.7857 | 22.5490 | 1.0000 | 18.0000 | 35.5000 | 53.0000 | 85.0000 |
-| Unnamed: 1 | 1,750.00 | 9,114.12 | 7,844.96 | 1.0000 | 1,868.75 | 6,271.00 | 16,201.00 | 23,339.00 |
-| day.1 | 1,750.00 | 36.7857 | 22.5490 | 1.0000 | 18.0000 | 35.5000 | 53.0000 | 85.0000 |
+| row_index | 1,750.00 | 9,114.12 | 7,844.96 | 1.0000 | 1,868.75 | 6,271.00 | 16,201.00 | 23,339.00 |
 | price_before | 1,750.00 | 99.9977 | 0.4333 | 98.0987 | 99.8128 | 100.0074 | 100.1856 | 102.3470 |
 | price_after | 1,750.00 | 99.9937 | 0.4336 | 98.1350 | 99.8094 | 100.0022 | 100.1792 | 102.3796 |
 | return | 1,750.00 | -4.052e-05 | 0.0004137 | -0.003125 | -0.000283 | -0.0001781 | 0.0002286 | 0.003192 |
@@ -193,7 +188,7 @@ Persistence in absolute-return dependence indicates that large moves are not nec
 ### 2.5 Rare-event catalogue — largest 1-minute moves
 
 The following table is intentionally limited to the requested top extreme events rather than reproducing the entire return dataset.
-| Unnamed: 0 | rank | day | Time | Price | log_ret_1m | ABS_log_ret_1m | zscore_log_ret_1m | dir_log_ret_1m |
+| row | rank | day | Time | Price | log_ret_1m | ABS_log_ret_1m | zscore_log_ret_1m | dir_log_ret_1m |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 822252 | 1 | 36 | 01:29:12 | 100.5923 | 0.007815 | 0.007815 | 22.7743 | UP |
 | 822253 | 2 | 36 | 01:29:13 | 100.5799 | 0.00773 | 0.00773 | 22.5264 | UP |
@@ -235,7 +230,7 @@ Each eligible day is classified independently using multiple quantitative diagno
 
 The interpretation follows the pre-declared direction of the tests: variance ratio materially below one and Hurst exponent below 0.5 support mean reversion; values above the corresponding thresholds support momentum/trending behaviour; values close to the random-walk benchmark are treated as approximately random.
 
-### 3.2 Regime breakdown across 85 days
+### 3.2 Regime breakdown across the 70 sessions
 
 | ret_series | regime | count | fraction |
 | --- | --- | --- | --- |
@@ -247,7 +242,7 @@ The interpretation follows the pre-declared direction of the tests: variance rat
 
 ### 3.3 Per-day regime evidence
 
-The complete 85-day regime table is a required deliverable. It is retained in the project output rather than reproducing all 85 rows inside the narrative report.
+The complete per-day regime table (70 sessions × 3 horizons) is in `output/13_regime_classify/`; only representative rows are shown here.
 
 **Representative rows:**
 
@@ -272,7 +267,7 @@ Disagreement between the tests should not be interpreted as a failure of the ana
 
 ### 3.5 Sequential regime behaviour
 
-| Unnamed: 0 | MEAN_REVERTING | RANDOM_WALK_LIKE | MOMENTUM | MIXED_INCONCLUSIVE |
+| from \ to | MEAN_REVERTING | RANDOM_WALK_LIKE | MOMENTUM | MIXED_INCONCLUSIVE |
 | --- | --- | --- | --- | --- |
 | MEAN_REVERTING | 0 | 0 | 0 | 1.0000 |
 | RANDOM_WALK_LIKE | 0 | 0.1607 | 0 | 0.8393 |
@@ -8067,7 +8062,7 @@ Feature alpha is ranked using the forward-return analysis. Only the leading cand
 ### 4.6 Redundancy and effective dimensions
 
 The feature correlation matrix is used to assess redundancy before interpreting individual features as independent sources of alpha.
-The largest off-diagonal absolute correlation represented in the matrix is approximately **70.0000**.
+Across the 41,328 feature pairs in `output/17_feature_correlation.csv`, the largest absolute Pearson correlation is **1.0000** (e.g. PB1_T9 vs PB4_T9); 166 pairs have \|ρ\| ≥ 0.9999 and 733 have \|ρ\| ≥ 0.95.
 
 #### PCA evidence
 
@@ -8198,13 +8193,13 @@ The strategy-selection output records the candidate signal screening and final s
 | 0.75 | -0.002628 | -0.003105 | -0.02628 | 0.001197 | 0.2997 | 51.0000 | 51.0000 | 10.0000 |
 | 0.5 | -0.006166 | -0.007185 | -0.06166 | 0.0003588 | 0.5711 | 87.0000 | 87.0000 | 10.0000 |
 
-The threshold-selection output is kept separate from the held-out test results to make the parameter-selection boundary explicit.
+This table is the coarser File 18 day-level pre-screen (`output/18_validation_thresholds.csv`); its day and trade counts differ from the final engine. The final threshold was chosen by validation Sharpe in the File 19 engine (`output/19_threshold_selection.csv`), where 1.25 gives Sharpe 5.66 on 6 trades over all 11 validation days. Neither table uses test days.
 
 ### 5.4 Backtest implementation
 
 The strategy is evaluated at a fixed intraday rebalance frequency. The signal at time *t* is applied to the subsequent execution interval rather than allowing information from the future bar to determine the same-bar trade. Transaction costs are explicitly included rather than using a frictionless return series.
 
-The project split separates parameter discovery from held-out evaluation. In the current strategy pipeline the train/validation stage is used for selection and calibration, while the final test period remains untouched until the strategy is fixed.
+Feature ranking uses Days 1–54 (train + validation), the z-score and signal direction use train only, and the threshold is chosen on validation, so no selection step uses test days. Because the validation days also sit inside the feature-ranking window, the validation Sharpe is optimistic by construction; the test split is the only clean out-of-sample read.
 
 ### 5.5 Performance
 
@@ -8320,7 +8315,7 @@ The final strategy should be judged primarily on the held-out performance and ro
 | Task 5 | 18–20 | Strategy selection, backtest, trade log, robustness |
 
 
-The final submission should include this written report together with the required supporting deliverables specified by the competition, especially the **85-row regime table**, the **feature dossier**, and the **trade log** for Level 2.
+Supporting deliverables: the per-day regime table (`output/13_regime_classify/`), the feature dossier (`output/16_FEATURE_DOSSIER.md`) and the trade log (`output/19_trade_log.csv`).
 
 
 The report intentionally does **not** reproduce every CSV row. Intermediate files remain the computational record, while this document contains the evidence needed to communicate the findings clearly within the requested report length.

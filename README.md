@@ -30,15 +30,15 @@ Only Days 1–85 may be used.
 | Distribution | `04`–`09` | Computes ACFs and intraday seasonality, runs Jarque–Bera and D'Agostino K² tests, counts sigma-event exceedances against a Gaussian, measures volatility clustering and catalogues extreme moves. |
 | Regimes | `10`–`14` | Applies a variance ratio (q = 2, 5, 30), the R/S Hurst exponent and lag-k ACF to each day, then a 2-of-3 consensus rule and a transition matrix. |
 | Feature forensics | `15`–`16` | Uses first-valid-index fingerprints to infer the window ladder (5 s to 3600 s). Each feature is matched against a library of rolling statistics using Pearson, Spearman, affine fits and lag-correlation. |
-| Feature alpha | `17` | Scores each feature as AlphaScore = 0.40·\|ρ_P\| + 0.35·\|ρ_S\| + 0.25·MI against forward returns at 60, 300 and 600 s. Also runs PCA on the 288 features. |
-| Strategy | `18`–`19` | Selects a feature using discovery days only (Days 1–54) with a redundancy penalty. The signal is a z-score using train-only mean and std. The threshold is chosen on validation. Max exposure is 1.0, costs are 7.5 bps per unit of turnover, execution lags by 1 minute and the position is reset to flat each day. |
+| Feature alpha | `17` | Scores each of the 288 features as AlphaScore = 0.40·\|ρ_P\| + 0.35·\|ρ_S\| + 0.25·MI against forward returns at 60, 300 and 600 s (864 feature × horizon candidates). Also runs PCA on the 288 features. |
+| Strategy | `18`–`19` | Re-ranks the candidates on discovery days only (Days 1–54, i.e. train + validation; no test days) with a redundancy penalty, narrowing them to 10 finalists and one signal. The signal is a z-score using train-only mean and std. The threshold is chosen on validation. Max exposure is 1.0, costs are 7.5 bps per unit of turnover, execution lags by 1 minute and the position is reset to flat each day. |
 | Robustness | `20` | Sweeps the threshold, costs (5, 7.5 and 10 bps) and rebalance interval (1 and 5 min), each run on train, validation and test. |
 
 **Split.** The split is by day index: train is Days 1–43, validation is Days 44–54 and test is Days 55–64 plus 80–85 (16 days). The day number is a file index, not a confirmed calendar date, so the ordering is assumed to be chronological.
 
 **Leakage fixes made during the project:**
 
-- The first version of the feature ranking used all 70 days, including test days. It was rewritten to use Days 1–54 only. This lowered the selected feature's alpha score from 0.2102 to 0.1999.
+- The first version of the feature ranking used all 70 days, including test days. It was rewritten to use Days 1–54 only. This lowered the selected feature's alpha score from 0.2102 to 0.1999. Days 1–54 still include the validation days (44–54), so the validation result is not fully independent of feature selection; the test days (55–64, 80–85) are excluded from all selection steps.
 - An earlier backtest executed trades at time t on a signal formed at t. This was replaced with a 1-minute execution lag.
 
 ## Results
@@ -47,7 +47,7 @@ Only Days 1–85 may be used.
 
 - Returns are far from normal. 425 of 426 normality tests reject at 5%. The pooled 1-minute kurtosis is 16.23.
 - At 1 minute there are 6.21× more 3σ moves than a Gaussian predicts (26,674 actual vs 4,298 expected). Day 36 alone accounts for 34.0% of them.
-- Hurst at 1 m is about 0.25–0.29 on all 70 days, and VR(5) at 1 m is about 4.83–4.88.
+- Hurst at 1 m is about 0.24–0.29 on all 70 days, and VR(5) at 1 m is about 4.81–4.88.
 - At 1 m, the regime vote is MIXED_INCONCLUSIVE on all 70 days. At 1 s it gives 47 random-walk, 18 mixed and 5 mean-reverting days.
 - **Caveat:** the 1 m and 5 m series are k-second returns sampled on the 1-second grid, so they overlap (n = 1,591,812 at 1 m). Overlap mechanically inflates the ACF (the |r| ACF at lag 1 is 0.963) and pushes the variance ratio towards q. The 1 m and 5 m regime results and tail counts should therefore be read as partly an artefact of how the returns were built, not as a property of the market.
 
@@ -78,6 +78,8 @@ Only Days 1–85 may be used.
 - The test set is small: 16 days and 12 trades.
 - Sharpe is annualised from 1-minute returns, with no confidence intervals.
 - 864 feature × horizon combinations and 5 thresholds were screened with no multiple-testing correction.
+- The validation days (44–54) were used twice: inside the Days 1–54 feature ranking and for the threshold choice. The validation Sharpe is therefore optimistic by construction.
+- The backtest went through three versions (`19.01`, `19.02`, `19.02.1`; the last one fixed the look-ahead), and each wrote test-split results, so the test split was viewed more than once. The selected feature (VB5_T12) and threshold (1.25) did not change between versions.
 - There is no buy-and-hold or random-signal baseline.
 
 ## How to run
@@ -85,7 +87,7 @@ Only Days 1–85 may be used.
 The `notebooks/` folder holds plain Python scripts. Run them from the repository root in numeric order. Where a script has several versions, the highest-numbered one is the latest (`16.02`, `17.02`, `18.04`, `19.02.1`).
 
 ```bash
-pip install pandas numpy scipy statsmodels scikit-learn matplotlib torch
+pip install pandas numpy scipy statsmodels scikit-learn matplotlib torch   # plus kagglehub for 00_dataset_download.py
 # place day1.csv ... day85.csv in ./EBX_Dataset/ (not included)
 python notebooks/01_data_audit.py
 python notebooks/02_cleaning_policy.py
@@ -93,7 +95,7 @@ python notebooks/02_cleaning_policy.py
 python notebooks/20_strategy_robust.py
 ```
 
-`00_dataset_download.py` is the original download helper. It writes to a hard-coded local path, so edit that path before using it. The scripts are self-contained and do not import any local package.
+`00_dataset_download.py` is the original download helper; it writes to `./EBX_Dataset/`. All paths are relative to the repository root. The scripts are self-contained and do not import any local package.
 
 ## Repository layout
 

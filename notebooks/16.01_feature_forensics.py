@@ -23,9 +23,9 @@ def normalize_day(x):
     return int(res.group(1)) if res else pd.NA
 
 
-DATA_DIR = Path(r'.\EBX_Dataset')
-OUTPUT_DIR = Path(r'.\output')
-RESULTS_DIR = Path(r'.\results')
+DATA_DIR = Path('EBX_Dataset')
+OUTPUT_DIR = Path('output')
+RESULTS_DIR = Path('results')
 INV_FILE = OUTPUT_DIR / "15_feature_inventory.csv"
 MISS_FILE = OUTPUT_DIR / "15_feature_missing.csv"
 

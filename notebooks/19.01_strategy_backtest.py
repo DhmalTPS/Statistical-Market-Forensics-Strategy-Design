@@ -33,9 +33,9 @@ def parse_days(x):
     ]
 
 
-DATA_DIR = Path(r'.\EBX_Dataset')
-OUTPUT_DIR = Path(r'.\output')
-RESULTS_DIR = Path(r'.\results')
+DATA_DIR = Path('EBX_Dataset')
+OUTPUT_DIR = Path('output')
+RESULTS_DIR = Path('results')
 
 CONFIG_FILE = OUTPUT_DIR / "18_strategy_config.csv"
 
